@@ -1,7 +1,7 @@
-import { 
-    checkAuth, 
+import {
+    checkAuth,
     getCharacter,
-    logout, 
+    logout,
     createCharacter,
     updateBottom,
     updateHead,
@@ -34,7 +34,7 @@ headDropdown.addEventListener('change', async() => {
     headCount++;
     await updateHead(headDropdown.value);
 
-   
+
     // update the head in supabase with the correct data
     refreshData();
 });
@@ -58,13 +58,14 @@ bottomDropdown.addEventListener('change', async() => {
 });
 
 catchphraseButton.addEventListener('click', async() => {
-    catchphraseInput.value = '';
+    //catchphraseInput.value = '';
 
     // go fetch the old catch phrases
     let character = await getCharacter();
     catchphrases = character.catchphrases;
     // update the catchphrases array locally by pushing the new catchphrase into the old array
-    catchphrases.push(catchphraseInput.value);
+    character.catchphrases.push(catchphraseInput.value);
+    catchphraseInput.value = '';
     // update the catchphrases in supabase by passing the mutated array to the updateCatchphrases function
     await updateChatchphrases(catchphrases);
     refreshData();
@@ -75,15 +76,15 @@ window.addEventListener('load', async() => {
     // on load, attempt to fetch this user's character
     if (!character) {
         const defaultCharacter = {
-            head: 'duck',
+            head: 'bird',
             middle: 'blue',
-            bottom: 'white',
+            bottom: 'leg',
             catchphrases: [],
         };
         character = await createCharacter(defaultCharacter);
     }
     // if this user turns out not to have a character
-    catchphrases = character.catchphrases;
+    //catchphrases = character.catchphrases;
     // create a new character with correct defaults for all properties (head, middle, bottom, catchphrases)
     // and put the character's catchphrases in state (we'll need to hold onto them for an interesting reason);
 
@@ -116,8 +117,9 @@ async function fetchAndDisplayCharacter() {
     if (character.bottom) {
         bottomEl.style.backgroundImage = `url(../assets/${character.bottom}-pants.png)`;
     }
-    
+
     // loop through catchphrases and display them to the dom (clearing out old dom if necessary)
+    chatchphrasesEl.textContent = '';
     for (let catchprase of character.catchphrases) {
         const p = document.createElement('p');
         p.textContent = catchprase;
