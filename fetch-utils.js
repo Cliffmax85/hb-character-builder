@@ -13,7 +13,7 @@ export async function createCharacter(character){
     const response = await client 
         .from('characters')
         .insert([newCharacter])
-        .match({user_id: newCharacter.user_id})
+        .match({ user_id: newCharacter.user_id })
         .single();
     return checkError(response);
 }
